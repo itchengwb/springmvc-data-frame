@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:property-placeholder location="classpath:jdbc.properties" />
+
+    <!-- Begin:update by wenbo.cheng for by Mysql数据源-->
+    <tx:annotation-driven transaction-manager="transactionManager_mgmt"/>
+
+    <bean id="transactionManager_mgmt" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource_mgmt" />
+    </bean>
+
+    <bean id="dataSource_mgmt" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driverClassName}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="initialPoolSize" value="3"></property>
+        <property name="minPoolSize" value="1"></property>
+        <property name="maxPoolSize" value="20"></property>
+        <property name="idleConnectionTestPeriod" value="120" />
+        <property name="maxIdleTime" value="120" />
+        <property name="acquireIncrement" value="5"/>
+    </bean>
+
+    <!-- 拦截一层用于打印日志 slowTime 3000-->
+    <!--<bean id="hookDataSource" class="com.qunar.des.common.dao.HookDataSource">
+        <property name="innerDataSource" ref="dataSource_mgmt"/>
+    </bean>-->
+
+    <bean id="sqlSessionFactory_mgmt" name="sqlSessionFactory_mgmt" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis/mybatis-config-score.xml"/>
+       <property name="dataSource" ref="dataSource_mgmt"/>
+        <property name="mapperLocations" value="classpath:mapper-score/*.xml"/>
+    </bean>
+
+    <bean id="mapperScannerConfigurer_mgmt" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="org.bobo.score.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_mgmt"/>
+    </bean>
+   <!--End:add by wenbo.cheng at 2015-08-04 14:11:31 for config mysql dataSource_mgmt-->
+</beans>

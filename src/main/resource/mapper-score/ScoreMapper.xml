@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.bobo.score.dao.ScoreMapper" >
+
+    <resultMap id="baseResulstMap" type="org.bobo.score.po.Score">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="score" column="score"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        id,user_id,score
+    </sql>
+
+    <!--<select id="getAllScore" resultType="Score">-->
+    <select id="getAllScore" resultMap="baseResulstMap">
+       select
+        <include refid="baseSql"/>
+        from score
+    </select>
+
+    <select id="getScoreByid" resultType="org.bobo.score.po.Score" >
+       select
+        <include refid="baseSql"/>
+        from score where id =${id}
+    </select>
+
+</mapper>
